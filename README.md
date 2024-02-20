@@ -1,12 +1,12 @@
 **Team Symphony**
 
-**Scrum Master:**
-Sai krishna Araja
+**Scrum Master**
+Sai Krishna Araja
 
-**Product Owner:**
-Sri Nikitha Challa  
+**Product Owner**
+Sri Nikitha Challa
 
-**Developers:**
-Lane Brantley
-Venkata Sai Pavan Bommuluri
-Hari Priya Chinnala
+**Developers**
+•	Lane Brantley
+•	Hari Priya Chinnala
+•	Venkata Sai Pavan Bommuluri
