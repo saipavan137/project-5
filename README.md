@@ -1,10 +1,10 @@
 **Team Symphony**
 
 **Scrum Master**
-Sai Krishna Araja
+Sri Nikitha Challa
 
 **Product Owner**
-Sri Nikitha Challa
+Sai Krishna Araja
 
 **Developers**
 •	Lane Brantley
