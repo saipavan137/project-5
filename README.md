@@ -8,5 +8,5 @@ Sri Nikitha Challa
 
 **Developers:**
 Lane Brantley
-venkata Sai Pavan Bommuluri
+Venkata Sai Pavan Bommuluri
 Hari Priya Chinnala
