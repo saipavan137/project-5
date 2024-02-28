@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   Divider,
   List,
@@ -15,9 +16,21 @@ import './userList.css';
 class UserList extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      users: []
+    };
+  }
+
+  componentDidMount() {
+    const users = window.models.userListModel();
+    this.setState({ users });
+    // users.map((user) => console.log(user.first_name));
   }
 
   render() {
+
+    const { users } = this.state;
+
     return (
       <div>
         <Typography variant="body1">
@@ -26,7 +39,7 @@ class UserList extends React.Component {
           display your users like so:
         </Typography>
         <List component="nav">
-          <ListItem>
+          {/* <ListItem>
             <ListItemText primary="Item #1" />
           </ListItem>
           <Divider />
@@ -37,7 +50,14 @@ class UserList extends React.Component {
           <ListItem>
             <ListItemText primary="Item #3" />
           </ListItem>
-          <Divider />
+          <Divider /> */}
+          {users.map(user => (
+          <div key={user._id}>
+            <ListItem button component={Link} to={`/users/${user._id}`}>
+              <ListItemText primary={`${user.first_name} ${user.last_name}`}></ListItemText>
+            </ListItem>
+          </div>
+          ))}
         </List>
         <Typography variant="body1">
           The model comes in from window.models.userListModel()
