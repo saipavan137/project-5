@@ -39,18 +39,6 @@ class UserList extends React.Component {
           display your users like so:
         </Typography>
         <List component="nav">
-          {/* <ListItem>
-            <ListItemText primary="Item #1" />
-          </ListItem>
-          <Divider />
-          <ListItem>
-            <ListItemText primary="Item #2" />
-          </ListItem>
-          <Divider />
-          <ListItem>
-            <ListItemText primary="Item #3" />
-          </ListItem>
-          <Divider /> */}
           {users.map(user => (
           <div key={user._id}>
             <ListItem button component={Link} to={`/users/${user._id}`}>
