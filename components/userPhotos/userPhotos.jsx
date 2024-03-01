@@ -4,33 +4,60 @@ import {
 } from '@mui/material';
 import './userPhotos.css';
 import { Link } from 'react-router-dom';
-
+import fetchModel from '../../lib/fetchModelData';
+import TopBar from '../topBar/TopBar';
 /**
  * Define UserPhotos, a React componment of project #5
  */
 class UserPhotos extends React.Component {
   constructor(props) {
     super(props);
-
+    this.state = {
+      user_id : undefined,
+      userPhotos: undefined,
+      user: null
+  };
   }
 
+  componentDidMount() {
+    this.handleUserChange(this.props.match.params.userId);
+  }
+
+  componentDidUpdate() {
+      const newUserId = this.props.match.params.userId;
+      const currentUserId = this.state.user_id;
+      if (currentUserId  !== newUserId){
+          this.handleUserChange(newUserId);
+      }
+  }
+
+
+  handleUserChange(userId){
+    fetchModel("/photosOfUser/" + userId)
+        .then((response) =>
+        {
+            this.setState({
+                user_id : userId,
+                userPhotos: response.data
+            });
+        });
+    fetchModel("/user/" + userId)
+        .then((response) =>
+        {
+            const new_user = response.data;
+            this.setState({
+              user: new_user
+            });
+        });
+  }
   render() {
 
-    const userId = this.props.match.params.userId;
-    const userPhotos = window.models.photoOfUserModel(userId);
-
+    const userPhotos = this.state.userPhotos;
+    const topBarContent = this.state?.user ? `User photos for ${this.state.user?.first_name} ${this.state.user?.last_name}` : '';
     return (
+      <div>
+      <TopBar topName={topBarContent}></TopBar>
       <Typography variant="body1">
-      {/* This should be the UserPhotos view of the PhotoShare app. Since
-      it is invoked from React Router the params from the route will be
-      in property match. So this should show details of user:
-      {this.props.match.params.userId}. You can fetch the model for the user from
-      window.models.photoOfUserModel(userId): */}
-        {/* <Typography variant="caption">
-          {JSON.stringify(window.models.photoOfUserModel(this.props.match.params.userId))}
-          <img src="" alt="" />
-        </Typography> */}
-
         <div className='photo-container'>
           {userPhotos.map(photo => (
             <div key={photo._id}>
@@ -49,7 +76,7 @@ class UserPhotos extends React.Component {
           ))}
         </div>
       </Typography>
-
+      </div>
     );
   }
 }

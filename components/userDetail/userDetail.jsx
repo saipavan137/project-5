@@ -6,8 +6,8 @@ import {
   Typography
 } from '@mui/material';
 import './userDetail.css';
-
-
+import fetchModel from '../../lib/fetchModelData';
+import TopBar from '../topBar/TopBar';
 /**
  * Define UserDetail, a React component of project #5
  */
@@ -20,27 +20,38 @@ class UserDetail extends React.Component {
   }
 
   componentDidMount() { //Calls the fetch method
-    this.fetchUserDetails();
+    const userId = this.props.match.params.userId;
+    this.fetchUserDetails(userId);
   }
 
-  componentDidUpdate(prevProps) { //checks if component updated when new user is selected
-    if (prevProps.match.params.userId !== this.props.match.params.userId) {
-      this.fetchUserDetails();
+  componentDidUpdate() { //checks if component updated when new user is selected
+    
+    if (this.state.user?._id !== this.props.match.params.userId) {
+      this.fetchUserDetails(this.props.match.params.userId);
     }
   }
 
-  fetchUserDetails() {
-    const userId = this.props.match.params.userId;
-    const user = window.models.userModel(userId);
-    this.setState({ user }); 
+  fetchUserDetails(userId) {
+    
+    fetchModel("/user/" + userId)
+    .then((response) =>
+    {
+        const new_user = response.data;
+        this.setState({
+            user: new_user
+        });
+        const main_content = "User Details for " + new_user.first_name + " " + new_user.last_name;
+        this.props.changeMainContent(main_content);
+    });
   }
 
   render() {
 
     const { user } = this.state;
-
+    const topBarContent = user ? `User photos for ${user.first_name} ${user.last_name}` : '';
     return (
       <div>
+         <TopBar topName={topBarContent} />
         <Typography variant="body1">
           {user ? ( //Makes sure the user is loaded before page renders to prevent error
             <>
