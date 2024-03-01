@@ -14,11 +14,12 @@ class UserPhotos extends React.Component {
     super(props);
     this.state = {
       user_id : undefined,
-      userPhotos: undefined,
+      userPhotos: [],
       user: null
   };
   }
 
+  
   componentDidMount() {
     this.handleUserChange(this.props.match.params.userId);
   }
@@ -51,10 +52,9 @@ class UserPhotos extends React.Component {
         });
   }
   render() {
-
-    const userPhotos = this.state.userPhotos;
+    const userPhotos =  this.state.userPhotos;
     const topBarContent = this.state?.user ? `User photos for ${this.state.user?.first_name} ${this.state.user?.last_name}` : '';
-    return (
+    return this.state.user_id ? (
       <div>
       <TopBar topName={topBarContent}></TopBar>
       <Typography variant="body1">
@@ -77,6 +77,8 @@ class UserPhotos extends React.Component {
         </div>
       </Typography>
       </div>
+    ):(
+      <div></div>
     );
   }
 }
