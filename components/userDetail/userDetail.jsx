@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
-  List,
-  ListItem,
+
   Typography
 } from '@mui/material';
 import './userDetail.css';
@@ -48,27 +47,27 @@ class UserDetail extends React.Component {
   render() {
 
     const { user } = this.state;
-    const topBarContent = user ? `User photos for ${user.first_name} ${user.last_name}` : '';
+    const main_content = user ? `User photos for ${user.first_name} ${user.last_name}` : '';
     return (
       <div>
-         <TopBar topName={topBarContent} />
+         <TopBar topName={main_content} />
         <Typography variant="body1">
           {user ? ( //Makes sure the user is loaded before page renders to prevent error
             <>
               <h1>{user.first_name} {user.last_name}</h1>
-              <p>
+              <h2>
                 {/* This should be the UserDetail view of the PhotoShare app. Since
                 it is invoked from React Router, the params from the route will be
                 in property match. So this should show details of user: {this.props.match.params.userId}.
                 You can fetch the model for the user from window.models.userModel(userId). */}
                 {user.description}
-              </p>
+              </h2>
               <Link to={`/photos/${user._id}`}>
                 View Photos
               </Link>
             </>
           ) : (
-            <p>Loading...</p>
+            <h1>Loading...</h1>
           )}
         </Typography>
       </div>

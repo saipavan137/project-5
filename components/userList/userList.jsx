@@ -1,16 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Divider,
+
   List,
   ListItem,
-  ListItemText,
-  Typography,
+  ListItemText
 }
 from '@mui/material';
 import './userList.css';
 import fetchModel from '../../lib/fetchModelData';
-import TopBar from '../topBar/TopBar';
+
 
 /**
  * Define UserList, a React component of project #5

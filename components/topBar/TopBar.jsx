@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  AppBar, Toolbar, Typography, Button, Divider, Box, Alert, Snackbar
+  AppBar, Toolbar, Typography
 } from '@mui/material';
 import './TopBar.css';
 import fetchModel from '../../lib/fetchModelData';
@@ -13,7 +13,7 @@ class TopBar extends React.Component {
     super(props);
     this.state = {
         app_info: undefined
-      
+        
     };
    
   }
@@ -38,8 +38,9 @@ class TopBar extends React.Component {
     return this.state.app_info ? (
       <AppBar className="topbar-appBar" position="absolute">
         <Toolbar>
+        <Typography variant="h5" component="div" sx={{ flexGrow: 0 }} color="inherit" align="left">Team: Symphony</Typography>
             <Typography variant="h5" component="div" sx={{ flexGrow: 1 }} color="inherit" align="center">{this.props.main_content}</Typography>
-            <Typography variant="h5" component="div" sx={{ flexGrow: 0 }} color="inherit">Team: Symphony, Version: {this.state.app_info._v}</Typography>
+            <Typography variant="h5" component="div" sx={{ flexGrow: 0 }} color="inherit" align="right"> Version: {this.state.app_info._v}</Typography>
         </Toolbar>
       </AppBar>
     ) : (

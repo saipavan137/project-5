@@ -17,15 +17,30 @@ import UserPhotos from './components/userPhotos/userPhotos';
 class PhotoShare extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      main_content: undefined,
+      user: undefined
+    };
+    this.changeMainContent = this.changeMainContent.bind(this);
+    this.changeUser = this.changeUser.bind(this);
   }
 
+  changeMainContent = (main_content) => {
+    this.setState({ main_content: main_content });
+  };
+
+  changeUser = (user) => {
+    this.setState({user: user});
+    if (user === undefined) this.changeMainContent(undefined);
+  };
+  
   render() {
     return (
       <HashRouter>
       <div>
       <Grid container spacing={8}>
         <Grid item xs={12}>
-          <TopBar/>
+        <TopBar main_content={this.state.main_content} user={this.state.user} changeUser={this.changeUser}/>
         </Grid>
         <div className="main-topbar-buffer"/>
         <Grid item sm={3}>
