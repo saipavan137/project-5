@@ -49,14 +49,14 @@ class UserPhotos extends React.Component {
             this.setState({
               user: new_user
             });
+            const main_content = this.state.user? `User photos for ${this.state.user?.first_name} ${this.state.user?.last_name}` : '';
+            this.props.changeMainContent(main_content);
         });
   }
   render() {
     const userPhotos =  this.state.userPhotos;
-    const main_content = this.state.user? `User photos for ${this.state.user?.first_name} ${this.state.user?.last_name}` : '';
     return this.state.user_id ? (
       <div>
-      <TopBar topName={main_content}></TopBar>
       <Typography variant="body1">
         <div className='photo-container'>
           {userPhotos.map(photo => (

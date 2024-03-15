@@ -40,7 +40,7 @@ class TopBar extends React.Component {
         <Toolbar>
         <Typography variant="h5" component="div" sx={{ flexGrow: 0 }} color="inherit" align="left">Team: Symphony</Typography>
             <Typography variant="h5" component="div" sx={{ flexGrow: 1 }} color="inherit" align="center">{this.props.main_content}</Typography>
-            <Typography variant="h5" component="div" sx={{ flexGrow: 0 }} color="inherit" align="right"> Version: {this.state.app_info._v}</Typography>
+            <Typography variant="h5" component="div" sx={{ flexGrow: 0 }} color="inherit" align="right"> Version: {this.state.app_info.__v}</Typography>
         </Toolbar>
       </AppBar>
     ) : (

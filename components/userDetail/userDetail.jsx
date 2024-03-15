@@ -41,17 +41,15 @@ class UserDetail extends React.Component {
             user: new_user
         });
         const main_content = "User Details for " + new_user.first_name + " " + new_user.last_name;
-        // this.props.changeMainContent(main_content);
+        this.props.changeMainContent(main_content);
     });
   }
 
   render() {
 
     const { user } = this.state;
-    const main_content = user ? `User photos for ${user.first_name} ${user.last_name}` : '';
     return (
       <div>
-         <TopBar topName={main_content} />
         <Typography variant="body1">
           {user ? ( //Makes sure the user is loaded before page renders to prevent error
             <>
@@ -63,6 +61,9 @@ class UserDetail extends React.Component {
                 You can fetch the model for the user from window.models.userModel(userId). */}
                 {user.description}
               </h2>
+              <h3> {user.occupation} </h3>
+              <h4> {user.location} </h4>
+              
               <Link to={`/photos/${user._id}`}>
                 View Photos
               </Link>

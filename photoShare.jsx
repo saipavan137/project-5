@@ -64,10 +64,10 @@ class PhotoShare extends React.Component {
                 )}
               />
               <Route path="/users/:userId"
-                render={ props => <UserDetail {...props} /> }
+                render={ props => <UserDetail {...props} changeMainContent={this.changeMainContent}/> }
               />
               <Route path="/photos/:userId"
-                render ={ props => <UserPhotos {...props} /> }
+                render ={ props => <UserPhotos {...props} changeMainContent={this.changeMainContent}/> }
               />
               <Route path="/users" component={UserList}  />
             </Switch>
