@@ -35,6 +35,7 @@ const mongoose = require("mongoose");
 mongoose.Promise = require("bluebird");
 
 const async = require("async");
+const path = require('path');
 
 const express = require("express");
 const app = express();
@@ -58,7 +59,7 @@ mongoose.connect("mongodb://127.0.0.1/project6", {
 app.use(express.static(__dirname));
 
 app.get("/", function (request, response) {
-  response.send("Simple web server of files from " + __dirname);
+  response.send( path.join("Simple web server of files from ", __dirname));
 });
 
 /**
@@ -164,7 +165,7 @@ app.get("/user/list", function (request, response) {
  */
 app.get("/user/:id", function (request, response) {
   const id = request.params.id;
-  User.findById(id)
+  User.findById(id,{__v:0})
     .then((user) => {
       if (user === null) {
         console.log("User with _id:" + id + " not found.");
@@ -234,10 +235,5 @@ app.get("/photosOfUser/:id", function (request, response) {
 
 const server = app.listen(3000, function () {
   const port = server.address().port;
-  console.log(
-    "Listening at http://localhost:" +
-      port +
-      " exporting the directory " +
-      __dirname
-  );
+  console.log("Listening at http://localhost:"+port);
 });
