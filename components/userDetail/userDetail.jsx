@@ -6,8 +6,6 @@ import {
 } from '@mui/material';
 import './userDetail.css';
 import fetchModel from '../../lib/fetchModelData';
-import TopBar from '../topBar/TopBar';
-
 /**
  * Define UserDetail, a React component of project #5
  */

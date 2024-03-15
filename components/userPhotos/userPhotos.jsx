@@ -5,9 +5,9 @@ import {
 import './userPhotos.css';
 import { Link } from 'react-router-dom';
 import fetchModel from '../../lib/fetchModelData';
-import TopBar from '../topBar/TopBar';
+
 /**
- * Define UserPhotos, a React componment of project #5
+ * Define UserPhotos, a React component of project #5
  */
 class UserPhotos extends React.Component {
   constructor(props) {
