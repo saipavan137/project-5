@@ -41,7 +41,7 @@ class UserDetail extends React.Component {
             user: new_user
         });
         const main_content = "User Details for " + new_user.first_name + " " + new_user.last_name;
-        this.props.changeMainContent(main_content);
+        // this.props.changeMainContent(main_content);
     });
   }
 
