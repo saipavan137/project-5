@@ -39,6 +39,9 @@ const path = require('path');
 
 const express = require("express");
 const app = express();
+const session = require("express-session");
+const bodyParser = require("body-parser");
+const multer = require("multer");
 
 // Load the Mongoose schema for User, Photo, and SchemaInfo
 const User = require("./schema/user.js");
@@ -57,6 +60,8 @@ mongoose.connect("mongodb://127.0.0.1/project6", {
 // We have the express static module
 // (http://expressjs.com/en/starter/static-files.html) do all the work for us.
 app.use(express.static(__dirname));
+app.use(session({secret: "secretKey", resave: false, saveUninitialized: false}));
+app.use(bodyParser.json());
 
 app.get("/", function (request, response) {
   response.send( path.join("Simple web server of files from ", __dirname));
@@ -140,10 +145,72 @@ app.get("/test/:p1", function (request, response) {
   }
 });
 
+function getSessionUserID(request){
+  return request.session.user_id;
+  //return session.user._id;
+}
+
+function hasNoUserSession(request, response){
+  //return false;
+  if (!getSessionUserID(request)){
+    response.status(401).send();
+    return true;
+  }
+  // if (session.user === undefined){
+  //   response.status(401).send();
+  //   return true;
+  // }
+  return false;
+}
+
+
+/**
+ * URL /admin/login - Returns user object on successful login
+ */
+app.post("/admin/login", function (request, response) {
+  const login_name = request.body.login_name || "";
+  const password = request.body.password || "";
+  User.find( {login_name: login_name, password: password }, {__v: 0})
+    .then((user)=> {    
+      if (user.length === 0) {
+        // Query didn't return an error but didn't find the user object -
+        // This is also an internal error return.
+        response.status(400).send();
+        return;
+      }
+      request.session.user_id = user[0]._id;
+      session.user_id = user[0]._id;
+      //session.user = user;
+      //response.cookie('user',user);
+      // We got the object - return it in JSON format.
+      response.end(JSON.stringify(user[0]));
+    }).catch((err) =>{
+      if (err) {
+        // Query returned an error. We pass it back to the browser with an
+        // Internal Service Error (500) error code.
+        console.error("Error in /admin/login", err);
+        response.status(500).send(JSON.stringify(err));
+      }
+  });
+});
+
+/**
+ * URL /admin/logout - clears user session
+ */
+app.post("/admin/logout", function (request, response) {
+  //session.user = undefined;
+  //response.clearCookie('user');
+  request.session.destroy(() => {
+    session.user_id = undefined;
+    response.end();
+  });
+});
+
 /**
  * URL /user/list - Returns all the User objects.
  */
 app.get("/user/list", function (request, response) {
+  if (hasNoUserSession(request, response)) return;
    User.find({}, { _id: 1, first_name: 1, last_name: 1 })
     .then((userList)=> {
       if (userList.length === 0) {
@@ -164,6 +231,7 @@ app.get("/user/list", function (request, response) {
  * URL /user/:id - Returns the information for User (id).
  */
 app.get("/user/:id", function (request, response) {
+  if (hasNoUserSession(request, response)) return;
   const id = request.params.id;
   User.findById(id,{__v:0})
     .then((user) => {
@@ -188,6 +256,7 @@ app.get("/user/:id", function (request, response) {
  * URL /photosOfUser/:id - Returns the Photos for User (id).
  */
 app.get("/photosOfUser/:id", function (request, response) {
+  if (hasNoUserSession(request, response)) return;
   const id = request.params.id;
   Photo.find({ user_id: id })
   .then((photos) => {

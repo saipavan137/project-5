@@ -7,12 +7,16 @@ import {
   Grid, Typography, Paper
 } from '@mui/material';
 import './styles/main.css';
+import {Redirect} from "react-router";
 
 // import necessary components
 import TopBar from './components/topBar/TopBar';
 import UserDetail from './components/userDetail/userDetail';
 import UserList from './components/userList/userList';
 import UserPhotos from './components/userPhotos/userPhotos';
+import LoginRegister from './components/loginRegister/loginRegister';
+
+
 
 class PhotoShare extends React.Component {
   constructor(props) {
@@ -23,6 +27,10 @@ class PhotoShare extends React.Component {
     };
     this.changeMainContent = this.changeMainContent.bind(this);
     this.changeUser = this.changeUser.bind(this);
+  }
+
+  userIsLoggedIn(){
+    return this.state.user !== undefined;
   }
 
   changeMainContent = (main_content) => {
@@ -43,33 +51,48 @@ class PhotoShare extends React.Component {
         <TopBar main_content={this.state.main_content} user={this.state.user} changeUser={this.changeUser}/>
         </Grid>
         <div className="main-topbar-buffer"/>
-        <Grid item sm={3}>
-          <Paper className="main-grid-item">
-            <UserList />
-          </Paper>
-        </Grid>
+        {
+          this.userIsLoggedIn() ?
+            (
+              <Grid item sm={3}>
+                <Paper className="main-grid-item">
+                  <UserList/>
+                </Paper>
+              </Grid>
+            )
+            : 
+            (<div></div>)
+        }          
         <Grid item sm={9}>
           <Paper className="main-grid-item">
             <Switch>
-            <Route exact path="/"
-                render={() => (
-                <Typography variant="body1">
-                  Welcome to your photosharing app! This <a href="https://mui.com/components/paper/">Paper</a> component
-                  displays the main content of the application. The {"sm={9}"} prop in
-                  the <a href="https://mui.com/components/grid/">Grid</a> item component makes it responsively
-                  display 9/12 of the window. The Switch component enables us to conditionally render different
-                  components to this part of the screen. You don&apos;t need to display anything here on the homepage,
-                  so you should delete this Route component once you get started.
-                </Typography>
-                )}
-              />
-              <Route path="/users/:userId"
-                render={ props => <UserDetail {...props} changeMainContent={this.changeMainContent}/> }
-              />
-              <Route path="/photos/:userId"
-                render ={ props => <UserPhotos {...props} changeMainContent={this.changeMainContent}/> }
-              />
-              <Route path="/users" component={UserList}  />
+              {
+                this.userIsLoggedIn() ?
+                    <Route path="/users/:userId" render={ props => <UserDetail {...props} changeMainContent={this.changeMainContent}/> }/>
+                    :
+                    <Redirect path="/users/:userId" to="/login-register" />
+              }
+              {
+                this.userIsLoggedIn() ?
+                    <Route path="/photos/:userId" render ={ props => <UserPhotos {...props} changeMainContent={this.changeMainContent}/> }/>
+                    :
+                    <Redirect path="/photos/:userId" to="/login-register" />
+              }
+              {
+                this.userIsLoggedIn() ?
+                    <Route exact path="/" render={() => (<div/>)}/>
+                    :
+                    <Route path="/login-register" render ={ props => <LoginRegister {...props} changeUser={this.changeUser}/> } />
+              }
+              {
+                this.userIsLoggedIn() ?
+                    <Route path="/" render={() => (<div/>)}/>
+                    :
+                    <Route path="/" render ={ props => <LoginRegister {...props} changeUser={this.changeUser}/> } />
+              }
+              
+                    <Route path="/users" Component={UserList}/>
+                    
             </Switch>
           </Paper>
         </Grid>
