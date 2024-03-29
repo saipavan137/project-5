@@ -15,13 +15,16 @@ class UserPhotos extends React.Component {
     this.state = {
       user_id : undefined,
       userPhotos: [],
-      user: null
+      user: null,
+      isLoggedIn: false,
+      commentText: null
   };
   }
 
   
   componentDidMount() {
     this.handleUserChange(this.props.match.params.userId);
+    this.checkLoggedIn();
   }
 
   componentDidUpdate() {
@@ -32,6 +35,50 @@ class UserPhotos extends React.Component {
       }
   }
 
+  checkLoggedIn() {
+    fetch('/checkloggedin')
+    .then(response => response.json())
+    .then(data => {
+      this.setState({ isLoggedIn: data.isLoggedIn });
+    })
+  }
+
+  handleSubmit() {
+    event.preventDefault();
+    const userId = this.state.user_id;
+    const commenterId = this.getSessionUserID();
+    const text = this.state.commentText;
+
+    this.handleCommentSubmit(userId, commenterId, text);
+  }
+
+  handleCommentSubmit(userId, commenterId, text) {
+    const requestBody = {
+      userId: userId,
+      commenterId: commenterId,
+      text: text
+    };
+  
+    fetch('/postcomment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch(error => {
+      console.error('Error submitting comment:', error);
+    });
+  }
+
+  getSessionUserID(request){
+    return request.session.user_id;
+    //return session.user._id;
+  }
 
   handleUserChange(userId){
     fetchModel("/photosOfUser/" + userId)
@@ -55,6 +102,8 @@ class UserPhotos extends React.Component {
   }
   render() {
     const userPhotos =  this.state.userPhotos;
+    const isLoggedIn = this.props.isLoggedIn;
+
     return this.state.user_id ? (
       <div>
       <Typography variant="body1">
@@ -71,6 +120,20 @@ class UserPhotos extends React.Component {
                     <span>{comment.comment}</span>
                   </div>
                 ))}
+                {isLoggedIn && (
+                  <div className='comment-form'>
+                    <form onSubmit={(event) => this.handleSubmit(event)}>
+                      <textarea
+                        placeholder="comment"
+                        rows={4}
+                        cols={50}
+                        value={this.state.commentText}
+                        onChange={(event) => this.setState({ commentText: event.target.value })}
+                      />
+                      <button type="submit">Submit Comment</button>
+                    </form>
+                  </div>
+                )}
               </div>
             </div>
           ))}

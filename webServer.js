@@ -213,7 +213,6 @@ app.post("/admin/logout", function (request, response) {
  * URL /user/list - Returns all the User objects.
  */
 app.get("/user/list", function (request, response) {
-  if (hasNoUserSession(request, response)) return;
    User.find({}, { _id: 1, first_name: 1, last_name: 1 })
     .then((userList)=> {
       if (userList.length === 0) {
@@ -230,11 +229,45 @@ app.get("/user/list", function (request, response) {
     });
 });
 
+app.get("/checkloggedin", function (request, response)  {
+  const isLoggedIn = false;
+  if (getSessionUserID()) {
+    isLoggedIn = true;
+    return isLoggedIn;
+  }
+  return isLoggedIn;
+})
+
+app.post("/postcomment", function (request, response) {
+  const { userId, commenterid, text } = request.body;
+
+  if (!userId || !text || !commenterId) {
+    return response.status(400).json({ error: "userid and text required" });
+  }
+
+  Photo.findOne({ user_id: userId })
+  .then((photo) => {
+    if (!photo) {
+      return response.status(404).json({ error: "Photo not found" });
+    }
+    photo.comments.push({ text: text, date_time: new Date(), user_id: commenterId});
+    photo.save()
+    .then(() => {
+      response.status(200).json({ message: 'comment added' });
+    }).catch((error) => {
+      console.log("Error saving photo:", error);
+      response.status(500).json({ error: "Failed to save photo" });
+    });
+  }).catch((error) => {
+    console.error("Error finding photo", error);
+    response.status(500).json({ error: "failed to find photo "});
+  })
+})
+
 /**
  * URL /user/:id - Returns the information for User (id).
  */
 app.get("/user/:id", function (request, response) {
-  if (hasNoUserSession(request, response)) return;
   const id = request.params.id;
   User.findById(id,{__v:0})
     .then((user) => {
@@ -259,7 +292,6 @@ app.get("/user/:id", function (request, response) {
  * URL /photosOfUser/:id - Returns the Photos for User (id).
  */
 app.get("/photosOfUser/:id", function (request, response) {
-  if (hasNoUserSession(request, response)) return;
   const id = request.params.id;
   Photo.find({ user_id: id })
   .then((photos) => {
