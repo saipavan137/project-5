@@ -167,6 +167,14 @@ function hasNoUserSession(request, response){
 }
 
 
+app.get('/getid', function(request, response) {
+  const userid = request.session.user_id;
+  if (!userid) {
+    response.status(500).json({ error: "Error" });
+  }
+  response.status(200).json({ userId: userid });
+});
+
 /**
  * URL /admin/login - Returns user object on successful login
  */
@@ -230,17 +238,15 @@ app.get("/user/list", function (request, response) {
 });
 
 app.get("/checkloggedin", function (request, response)  {
-  const isLoggedIn = false;
-  if (getSessionUserID()) {
-    isLoggedIn = true;
-    return isLoggedIn;
-  }
-  return isLoggedIn;
-})
+  const userid = getSessionUserID(request);
+  response.status(200).json({ userId: userid });
+});
 
 app.post("/postcomment", function (request, response) {
-  const { userId, commenterid, text } = request.body;
-
+  const { userId, commenterId, text } = request.body;
+  console.log(userId);
+  console.log(commenterId);
+  console.log(text);
   if (!userId || !text || !commenterId) {
     return response.status(400).json({ error: "userid and text required" });
   }
