@@ -47,47 +47,47 @@ class TopBar extends React.Component {
             this.props.changeUser(undefined);
             console.log(error);
         });
-  }
+  };
 
   handleOpenForm = () => {
     this.setState({
       isUploadFormOpen: true // Open the upload form when the button is clicked
     });
-  }
+  };
 
   handleCloseForm = () => {
     this.setState({
       isUploadFormOpen: false // Close the upload form
     });
-  }
+  };
 
   handleUploadPhoto = () => {
     const fileInput = document.getElementById('photo');
-  const file = fileInput.files[0];
+    const file = fileInput.files[0];
 
-  if (!file) {
-    alert('Please select a file to upload.');
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append('photo', file);
-
-  axios.post('/photos/new', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
+    if (!file) {
+      alert('Please select a file to upload.');
+      return;
     }
-  })
-  .then((response) => {
-    console.log('Photo uploaded successfully');
-    // Close the upload form after successful upload
-    this.handleCloseForm();
-  })
-  .catch((error) => {
-    console.error('Error uploading photo:', error);
-    alert('Error uploading photo. Please try again.');
-  });
-  }
+
+    const formData = new FormData();
+    formData.append('photo', file);
+
+    axios.post('/photos/new', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    .then((response) => {
+      console.log('Photo uploaded successfully');
+      // Close the upload form after successful upload
+      this.handleCloseForm();
+    })
+    .catch((error) => {
+      console.error('Error uploading photo:', error);
+      alert('Error uploading photo. Please try again.');
+    });
+  };
 
   render() {
     return this.state.app_info ? (

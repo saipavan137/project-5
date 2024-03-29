@@ -38,7 +38,7 @@ const bodyParser = require("body-parser");
 const multer = require("multer");
 
 const fs=require("fs");
-const processFormBody = multer({storage: multer.memoryStorage()}).single('uploadedphoto');
+
 const async = require("async");
 const path = require('path');
 
@@ -292,7 +292,7 @@ app.post("/commentsOfPhoto/:photo_id", function (request, response) {
   });  
 });
 
-app.post('/photos/new', function (request, response) {
+app.post('/photos/new',upload.single("photo"),  function (request, response) {
   if (hasNoUserSession(request, response)){
     return;
   } 
@@ -305,37 +305,19 @@ app.post('/photos/new', function (request, response) {
      response.status(401).json({error: "User not logged in"});
   }
 
-  processFormBody(request, response, function (err) {
-    if (err || !request.file) {
-      console.error("Error in /photos/new", err);
-      response.status(400).send("photo required");
-      return;
-    }
-    const timestamp = new Date().valueOf();
-    const filename = 'U' +  String(timestamp) + request.file.originalname;
-    fs.writeFile("./images/" + filename, request.file.buffer, function (err1) {
-      if (err1) {
-        console.error("Error in /photos/new", err1);
-        response.status(400).send("error writing photo");
-        return;
-      }
-      Photo.create(
-        {
-          _id: new mongoose.Types.ObjectId(),
-          file_name:  request.file.filename,
-          date_time: new Date(),
-          user_id: new mongoose.Types.ObjectId(userId),
-          comment: []
-        })
-          .then(() => {
-            response.end();
-          })
-          .catch(err2 => {
-            console.error("Error in /photos/new", err2);
-            response.status(500).send(JSON.stringify(err2));
-          });
+  Photo.create({
+      _id: new mongoose.Types.ObjectId(),
+      file_name:  request.file.filename,
+      date_time: new Date(),
+      user_id: new mongoose.Types.ObjectId(userId),
+      comment: []
+    }).then(() => {
+        response.end();
+    }).catch(err2 => {
+        console.error("Error in /photos/new", err2);
+        response.status(500).send(JSON.stringify(err2));
     });
-  });
+   
  
 });
 
