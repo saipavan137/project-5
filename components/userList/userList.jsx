@@ -18,7 +18,7 @@ class UserList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      users: [],
+      users: undefined,
       userId: undefined
     };
   }
@@ -30,10 +30,14 @@ class UserList extends React.Component {
   componentDidUpdate() { //checks if component updated when new user is selected
     const userId = this.props.match?.params.userId;
     if (this.state.userId !== userId) {
-      this.setState({
+      this.handleUserChange(userId);
+    }
+  }
+
+  handleUserChange(userId){
+    this.setState({
         userId: userId
     });
-    }
   }
 
   fetchUserListDetails(){
@@ -48,13 +52,11 @@ class UserList extends React.Component {
 
   render() {
 
-    const { users } = this.state;
-
-    return (
+    return this.state.users? (
       <div>    
         <List component="nav">
           {
-            users.map(user => (
+            this.state.users.map(user => (
               <div key={user._id}>
                 <ListItem component={Link} to={`/users/${user._id}`} selected={this.state.userId === user._id}>
                   <ListItemText primary={`${user.first_name} ${user.last_name}`}></ListItemText>
@@ -64,7 +66,9 @@ class UserList extends React.Component {
           }
         </List>
       </div>
-    );
+    )
+    : 
+    (<div></div>);
   }
 }
 

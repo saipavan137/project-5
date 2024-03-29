@@ -11,7 +11,6 @@ import {
   DialogActions,
   Typography
 } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import axios from 'axios';
 
 class LoginRegister extends React.Component {
@@ -37,10 +36,9 @@ class LoginRegister extends React.Component {
     };
 
     this.handleLogin = this.handleLogin.bind(this);
-    this.handleRegister = this.handleRegister.bind(this);
+    this.handleRegister = this.handleRegister.bind(this); 
     this.handleChange = this.handleChange.bind(this);
     this.handleShowRegistration = this.handleShowRegistration.bind(this);
-    this.handleCloseRegistration = this.handleCloseRegistration.bind(this);
   }
   
   handleShowRegistration = () => {
@@ -51,14 +49,7 @@ class LoginRegister extends React.Component {
     });
   };
 
-  handleCloseRegistration = () => {
-    this.setState({
-      openRegistration: false,
-      showRegistrationSuccess: false,
-      showRegistrationError: false,
-      showRequiredFieldsWarning: false,
-    });
-  };
+ 
 
   handleLogin = () => {
     const currentState = JSON.stringify(this.state.user);
@@ -147,7 +138,9 @@ class LoginRegister extends React.Component {
     // eslint-disable-next-line no-return-assign
     this.setState((state) => state.user[event.target.id] = event.target.value);
   }
-
+  componentDidMount() {
+    
+  }
   render() {
     return this.state.userLoggedOn !== true? (
       <div>
@@ -171,9 +164,9 @@ class LoginRegister extends React.Component {
         </Box>
         <Box>
           <Button variant="contained" onClick={this.handleShowRegistration}>
-            Register
+            Register Me
           </Button>
-          <Dialog open={this.state.openRegistration} onClose={this.handleCloseRegistration}>
+          <Dialog open={this.state.openRegistration} >
             <DialogTitle>User Registration</DialogTitle>
             <DialogContent>
               {this.state.showRequiredFieldsWarning && <Alert severity="warning">Please fill in all required fields.</Alert>}
@@ -198,10 +191,7 @@ class LoginRegister extends React.Component {
             </DialogContent>
             <DialogActions>
               <Button variant="contained" onClick={this.handleRegister}>
-                Register
-              </Button>
-              <Button variant="outlined" onClick={this.handleCloseRegistration}>
-                Close
+                Register Me
               </Button>
             </DialogActions>
           </Dialog>

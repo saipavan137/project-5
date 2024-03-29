@@ -17,7 +17,8 @@ class UserPhotos extends React.Component {
       userPhotos: [],
       user: null,
       commenterId: null,
-      commentText: null
+      commentText: null,
+      current_photo_id:null,
   };
   }
 
@@ -40,12 +41,11 @@ class UserPhotos extends React.Component {
     .then(response => response.json())
     .then(data => {
       this.setState({ commenterId: data });
-    })
+    });
   }
 
   handleSubmit(event) {
     event.preventDefault();
-    
     this.getSessionUserID()
       .then(commenterId => {
         const userId = this.state.user_id;
@@ -67,8 +67,8 @@ class UserPhotos extends React.Component {
     console.log('userid:', userId);
     console.log('text:', text);
     console.log('commenter:', commenterId);
-
-    fetch('/postcomment', {
+    const current_photo_id = this.state.current_photo_id;
+    fetch(`/commentsOfPhoto/${current_photo_id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -156,7 +156,7 @@ class UserPhotos extends React.Component {
                         rows={4}
                         cols={50}
                         value={this.state.commentText}
-                        onChange={(event) => this.setState({ commentText: event.target.value })}
+                        onChange={(event) => this.setState({ commentText: event.target.value,current_photo_id: photo._id })}
                       />
                       <button type="submit">Submit Comment</button>
                     </form>

@@ -4,7 +4,7 @@ import {
   HashRouter, Route, Switch
 } from 'react-router-dom';
 import {
-  Grid, Typography, Paper
+  Grid, Paper
 } from '@mui/material';
 import './styles/main.css';
 import {Redirect} from "react-router";
@@ -90,8 +90,6 @@ class PhotoShare extends React.Component {
                     :
                     <Route path="/" render ={ props => <LoginRegister {...props} changeUser={this.changeUser}/> } />
               }
-              
-                    <Route path="/users" Component={UserList}/>
                     
             </Switch>
           </Paper>
@@ -102,7 +100,6 @@ class PhotoShare extends React.Component {
     );
   }
 }
-
 
 ReactDOM.render(
   <PhotoShare />,

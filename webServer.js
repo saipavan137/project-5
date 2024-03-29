@@ -37,7 +37,8 @@ const session = require("express-session");
 const bodyParser = require("body-parser");
 const multer = require("multer");
 
-
+const fs=require("fs");
+const processFormBody = multer({storage: multer.memoryStorage()}).single('uploadedphoto');
 const async = require("async");
 const path = require('path');
 
@@ -234,6 +235,7 @@ app.post("/admin/logout", function (request, response) {
  * URL /user/list - Returns all the User objects.
  */
 app.get("/user/list", function (request, response) {
+  if (hasNoUserSession(request, response)) return;
    User.find({}, { _id: 1, first_name: 1, last_name: 1 })
     .then((userList)=> {
       if (userList.length === 0) {
@@ -255,63 +257,158 @@ app.get("/checkloggedin", function (request, response)  {
   response.status(200).json({ userId: userid });
 });
 
-app.post("/postcomment", function (request, response) {
+app.post("/commentsOfPhoto/:photo_id", function (request, response) {
+  if (hasNoUserSession(request, response)){ return;}
   const { userId, commenterId, text } = request.body;
+  const id =  request.params.photo_id || "";
+  
   console.log(userId);
   console.log(commenterId);
   console.log(text);
-  if (!userId || !text || !commenterId) {
-    return response.status(400).json({ error: "userid and text required" });
+  if (!text ) {
+     response.status(400).json({ error: "userid and text required" });
+     return ;
   }
 
-  Photo.findOne({ user_id: userId })
-  .then((photo) => {
-    if (!photo) {
-      return response.status(404).json({ error: "Photo not found" });
+  Photo.updateOne(
+    { _id: new mongoose.Types.ObjectId(id) },
+    { $push: {
+        comments: {
+          comment: text,
+          date_time: new Date(),
+          user_id: new mongoose.Types.ObjectId(commenterId),
+          _id: new mongoose.Types.ObjectId()
+        }
+      } },
+  function (err) {
+    if (err) {
+      // Query returned an error. We pass it back to the browser with an
+      // Internal Service Error (500) error code.
+      console.error("Error in /commentsOfPhoto/:photo_id", err);
+      response.status(500).send(JSON.stringify(err));
+      return;
     }
-    photo.comments.push({ text: text, date_time: new Date(), user_id: commenterId});
-    photo.save()
-    .then(() => {
-      response.status(200).json({ message: 'comment added' });
-    }).catch((error) => {
-      console.log("Error saving photo:", error);
-      response.status(500).json({ error: "Failed to save photo" });
-    });
-  }).catch((error) => {
-    console.error("Error finding photo", error);
-    response.status(500).json({ error: "failed to find photo "});
-  })
-})
+    response.end();
+  });  
+});
 
-app.post('/photos/new', upload.single("photo"), function (request, response) {
+app.post('/photos/new', function (request, response) {
+  if (hasNoUserSession(request, response)){
+    return;
+  } 
   if (!request.file) {
-    return response.status(400).json({error: "No file uploaded."});
+    response.status(400).json({error: "No file uploaded."});
   }
   const userId = getSessionUserID(request);
 
   if (!userId) {
-    return response.status(401).json({error: "User not logged in"});
+     response.status(401).json({error: "User not logged in"});
   }
 
-  const newPhoto = new Photo({
-    file_name: request.file.filename,
-    user_id: userId,
-  })
-
-  newPhoto.save(function (err) {
-    if (err) {
-      return response.status(500).json({ error: "Failed to save photo." });
+  processFormBody(request, response, function (err) {
+    if (err || !request.file) {
+      console.error("Error in /photos/new", err);
+      response.status(400).send("photo required");
+      return;
     }
-    response.status(200).json({ success: "Photo uploaded successfully" });
-  })
-})
+    const timestamp = new Date().valueOf();
+    const filename = 'U' +  String(timestamp) + request.file.originalname;
+    fs.writeFile("./images/" + filename, request.file.buffer, function (err1) {
+      if (err1) {
+        console.error("Error in /photos/new", err1);
+        response.status(400).send("error writing photo");
+        return;
+      }
+      Photo.create(
+        {
+          _id: new mongoose.Types.ObjectId(),
+          file_name:  request.file.filename,
+          date_time: new Date(),
+          user_id: new mongoose.Types.ObjectId(userId),
+          comment: []
+        })
+          .then(() => {
+            response.end();
+          })
+          .catch(err2 => {
+            console.error("Error in /photos/new", err2);
+            response.status(500).send(JSON.stringify(err2));
+          });
+    });
+  });
+ 
+});
+
+app.post("/user", function (request, response) {
+  const first_name = request.body.first_name || "";
+  const last_name = request.body.last_name || "";
+  const location = request.body.location || "";
+  const description = request.body.description || "";
+  const occupation = request.body.occupation || "";
+  const login_name = request.body.login_name || "";
+  const password = request.body.password || "";
+
+  if (first_name === "") {
+    console.error("Error in /user", first_name);
+    response.status(400).send("first_name is required");
+    return;
+  }
+  if (last_name === "") {
+    console.error("Error in /user", last_name);
+    response.status(400).send("last_name is required");
+    return;
+  }
+  if (login_name === "") {
+    console.error("Error in /user", login_name);
+    response.status(400).send("login_name is required");
+    return;
+  }
+  if (password === "") {
+    console.error("Error in /user", password);
+    response.status(400).send("password is required");
+    return;
+  }
+
+  User.exists({login_name: login_name}, function (err, returnValue){
+    if (err){
+      console.error("Error in /user", err);
+      response.status(500).send();
+    } else if (returnValue) {
+        console.error("Error in /user", returnValue);
+        response.status(400).send();
+    } else {
+        User.create(
+            {
+              _id: new mongoose.Types.ObjectId(),
+              first_name: first_name,
+              last_name: last_name,
+              location: location,
+              description: description,
+              occupation: occupation,
+              login_name: login_name,
+              password: password
+            })
+            .then((user) => {
+              request.session.user_id = user._id;
+              session.user_id = user._id;
+              response.end(JSON.stringify(user));
+            })
+            .catch(error => {
+              console.error("Error in /user", error);
+              response.status(500).send();
+            });
+      }
+    
+  });
+});
 
 /**
  * URL /user/:id - Returns the information for User (id).
  */
 app.get("/user/:id", function (request, response) {
+  if (hasNoUserSession(request, response)) return;
   const id = request.params.id;
-  User.findById(id,{__v:0})
+  User.findById(id,{__v:0, login_name:0, password: 0})
     .then((user) => {
       if (user === null) {
         console.log("User with _id:" + id + " not found.");
@@ -334,6 +431,7 @@ app.get("/user/:id", function (request, response) {
  * URL /photosOfUser/:id - Returns the Photos for User (id).
  */
 app.get("/photosOfUser/:id", function (request, response) {
+  if (hasNoUserSession(request, response)) return;
   const id = request.params.id;
   Photo.find({ user_id: id })
   .then((photos) => {
@@ -374,7 +472,7 @@ app.get("/photosOfUser/:id", function (request, response) {
     }
   }).catch((err) => {
       console.log("Error occurred while retrieving photo with id",err);
-      response.status(500).send(JSON.stringify(err));
+      response.status(400).send(JSON.stringify(err));
       return null;
   });
 });
