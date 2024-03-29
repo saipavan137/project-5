@@ -70,6 +70,19 @@ app.get("/", function (request, response) {
   response.send( path.join("Simple web server of files from ", __dirname));
 });
 
+//Multer config for desination
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, "./images/"));
+  },
+  filename: function (req, file, cb) {
+    const uniqueName = Date.now() + "-" + Math.round(Math.random() * 1E9);
+    cb(null, uniqueName + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage }); //define the upload function for multer
+
 /**
  * Use express to handle argument passing in the URL. This .get will cause
  * express to accept URLs with /test/<something> and return the something in
@@ -267,6 +280,29 @@ app.post("/postcomment", function (request, response) {
   }).catch((error) => {
     console.error("Error finding photo", error);
     response.status(500).json({ error: "failed to find photo "});
+  })
+})
+
+app.post('/photos/new', upload.single("photo"), function (request, response) {
+  if (!request.file) {
+    return response.status(400).json({error: "No file uploaded."});
+  }
+  const userId = getSessionUserID(request);
+
+  if (!userId) {
+    return response.status(401).json({error: "User not logged in"});
+  }
+
+  const newPhoto = new Photo({
+    file_name: request.file.filename,
+    user_id: userId,
+  })
+
+  newPhoto.save(function (err) {
+    if (err) {
+      return response.status(500).json({ error: "Failed to save photo." });
+    }
+    response.status(200).json({ success: "Photo uploaded successfully" });
   })
 })
 
