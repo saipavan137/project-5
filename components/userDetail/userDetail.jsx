@@ -1,9 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import {
-
-  Typography
-} from '@mui/material';
+import { Link as RouterLink} from 'react-router-dom';
+import {  Typography,Grid,Card,CardContent } from '@mui/material';
 import './userDetail.css';
 import fetchModel from '../../lib/fetchModelData';
 /**
@@ -13,7 +10,7 @@ class UserDetail extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: null
+      user: undefined,
     };
   }
 
@@ -46,32 +43,32 @@ class UserDetail extends React.Component {
   render() {
 
     const { user } = this.state;
-    return (
-      <div>
-        <Typography variant="body1">
-          {user ? ( //Makes sure the user is loaded before page renders to prevent error
-            <>
-              <h1>{user.first_name} {user.last_name}</h1>
-              <h2>
-                {/* This should be the UserDetail view of the PhotoShare app. Since
-                it is invoked from React Router, the params from the route will be
-                in property match. So this should show details of user: {this.props.match.params.userId}.
-                You can fetch the model for the user from window.models.userModel(userId). */}
-                {user.description}
-              </h2>
-              <h3> {user.occupation} </h3>
-              <h4> {user.location} </h4>
-              
-              <Link to={`/photos/${user._id}`}>
+    const {activeUser, } = this.props;
+    const {first_name, last_name, } = activeUser;
+    return user ? ( //Makes sure the user is loaded before page renders to prevent error
+      <Card variant="outlined">
+        <CardContent>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography variant="h5">{user.first_name} {user.last_name}</Typography>
+            </Grid>              
+            <Grid item xs={12}>
+              <Typography variant="body1">Location: {user.location}</Typography>
+              <Typography variant="body1">Description: {user.description}</Typography>
+              <Typography variant="body1">Occupation: {user.occupation}</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <RouterLink to={`/photos/${user._id}`}>
                 View Photos
-              </Link>
-            </>
-          ) : (
-            <h1>Loading...</h1>
-          )}
-        </Typography>
-      </div>
-    );
+              </RouterLink>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+      ) : 
+      (
+        <h1>Loading...</h1>
+      );
   }
 }
 

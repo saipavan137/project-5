@@ -1,0 +1,17 @@
+.controlIcons {
+  display: flex;
+  padding: 20px;
+  width: 100px;
+  gap: 15px;
+}
+
+.iconContainer {
+  cursor: pointer;
+  display: flex;
+  width: 70px;
+
+}
+
+.iconContainer:hover {
+  background-color: #ffffff93;
+}

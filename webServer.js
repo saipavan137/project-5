@@ -459,6 +459,44 @@ app.get("/photosOfUser/:id", function (request, response) {
   });
 });
 
+app.post('/favorite', async (request, response) => {
+  const { favorite, fileName, user_id } = request.body;
+  try {
+    console.log(favorite, fileName, user_id);
+    const user = await User.findById(user_id);
+    if(favorite ==='ALL' || fileName === undefined) {
+      response.status(200).send(user.favorites);
+      return;
+    }
+    else if(favorite) {
+      const file = {file_name: fileName, };
+      console.log('favorite');
+      user.favorites.push(file);  
+      user.save().then(res => {
+        console.log(res);
+        response.status(200).send(user.favorites);  
+      }).catch((err) =>{console.log(err);});         
+    }
+    else {
+      const indexToRemove = user.favorites.findIndex(
+        (file) => file.file_name === fileName
+      );
+      console.log('Not favorite');
+      if (indexToRemove !== -1) {
+        user.favorites.splice(indexToRemove, 1);
+      }   
+      user.save().then(res => {
+        console.log(res);
+        response.status(200).send(user.favorites);   
+      }).catch((err) =>{console.log(err);});         
+    }   
+    return;
+  } catch (e) {
+    console.log(e);
+  }
+ 
+});
+
 const server = app.listen(3000, function () {
   const port = server.address().port;
   console.log("Listening at http://localhost:"+port);

@@ -1,10 +1,16 @@
 import React from 'react';
 import {
-  Typography
+  Typography,ImageList,Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,Button
 } from '@mui/material';
+import { Mention, MentionsInput } from 'react-mentions';
 import './userPhotos.css';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import fetchModel from '../../lib/fetchModelData';
+import Photo from './photo/photo';
+import mentionsInputStyle from "./mentionsInputStyle";
+import mentionStyle from "./mentionStyle";
+
 
 /**
  * Define UserPhotos, a React component of project #5
@@ -19,13 +25,28 @@ class UserPhotos extends React.Component {
       commenterId: null,
       commentText: null,
       current_photo_id:null,
-  };
+      users: [],
+      taggedIds: [],
+      tagValue: "",
+      add_comment:false,
+      new_comment:undefined,
+    };
+    this.tagOnChange = this.tagOnChange.bind(this);
+    this.handleCancelAddComment = this.handleCancelAddComment.bind(this);
+
   }
 
   
   componentDidMount() {
     this.handleUserChange(this.props.match.params.userId);
     this.checkLoggedIn();
+    axios.get("/user/list").then((response) => {
+      this.setState({
+        users: response.data.map((obj) => {
+          return { id: obj._id, display: obj.first_name + " " + obj.last_name };
+        }),
+      });
+    });
   }
 
   componentDidUpdate() {
@@ -44,6 +65,39 @@ class UserPhotos extends React.Component {
     });
   }
 
+  tagOnChange(event, newValue, newPlainTextValue, mentions) {
+    const mentionIds = mentions.map((mention) => mention.id);
+    this.setState({
+      tagValue: event.target.value,
+      commentText : event.target.value,
+      //current_photo_id: photo._id,
+      taggedIds: mentionIds,
+    });
+  }
+
+  handleNewCommentChange = (event) => {
+    this.setState({
+      new_comment: event.target.value,
+    });
+  };
+
+
+  handleShowAddComment = (event) => {
+    const photo_id = event.target.attributes.photo_id.value;
+    this.setState({
+      add_comment: true,
+      current_photo_id: photo_id
+    });
+  };
+
+  handleCancelAddComment = () => {
+    this.setState({
+      add_comment: false,
+      new_comment: undefined,
+      current_photo_id: undefined
+    });
+  };
+
   handleSubmit(event) {
     event.preventDefault();
     this.getSessionUserID()
@@ -61,7 +115,8 @@ class UserPhotos extends React.Component {
     const requestBody = {
       userId: userId,
       commenterId: commenterId,
-      text: text
+      text: text,
+      taggedIds: this.state.taggedIds,
     };
     
     console.log('userid:', userId);
@@ -77,7 +132,19 @@ class UserPhotos extends React.Component {
     })
     .then(response => response.json())
     .then(data => {
-      console.log(data);
+      console.log(
+        
+      );
+      this.setState({
+        add_comment: false,
+        current_photo_id: undefined,
+        tagValue: undefined,
+      });
+      axios.get(`/photosOfUser/${userId}`).then((response) => {
+        this.setState({
+          userPhotos: response.data,
+        });
+      });
     })
     .catch(error => {
       console.error('Error submitting comment:', error);
@@ -134,39 +201,53 @@ class UserPhotos extends React.Component {
 
     return this.state.user_id ? (
       <div>
-      <Typography variant="body1">
-        <div className='photo-container'>
-          {userPhotos.map(photo => (
-            <div key={photo._id}>
-              <span className="date-time">{photo.date_time}</span>
-              <img className="photo" src={`/images/${photo.file_name}`} alt="" />
-              <div className="comments">
-                {photo.comments && photo.comments.map(comment => (
-                  <div key={comment._id} className="comment">
-                    <span className="date-time">{comment.date_time}</span>
-                    <Link to={`/users/${comment.user._id}`}><span className="username">{comment.user.first_name} {comment.user.last_name}</span></Link>
-                    <span>{comment.comment}</span>
-                  </div>
-                ))}
-                {this.state.commenterId && (
-                  <div className='comment-form'>
-                    <form onSubmit={(event) => this.handleSubmit(event)}>
-                      <textarea
-                        placeholder="comment"
-                        rows={4}
-                        cols={50}
-                        value={this.state.commentText}
-                        onChange={(event) => this.setState({ commentText: event.target.value,current_photo_id: photo._id })}
-                      />
-                      <button type="submit">Submit Comment</button>
-                    </form>
-                  </div>
-                )}
+        <ImageList variant="masonry" cols={1} gap={8}>
+            {userPhotos ? userPhotos.map((item) => {              
+                            
+              let favoriteFlag = false;
+              console.log(this.props.activeUser.favorites);
+              this.props.activeUser.favorites.forEach((fav) => {
+                console.log(fav.file_name);
+                if (fav.file_name === item.file_name){
+                  favoriteFlag = true;
+                }
+              });
+             
+              return (
+                <Photo key={item._id} favoriteFlag={favoriteFlag} activeUser={this.props.activeUser}
+                  item={item} handleShowAddComment={this.handleShowAddComment}>
+                </Photo>
+              );
+            }) : (
+              <div>
+                <Typography>No Photos</Typography>
               </div>
-            </div>
-          ))}
-        </div>
-      </Typography>
+            )}
+        </ImageList>     
+                        
+        {this.state.commenterId && (
+          <Dialog open={this.state.add_comment}>
+            <DialogTitle>Add Comment</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Enter New Comment for Photo
+              </DialogContentText>
+              <MentionsInput
+                placeholder="Add Comment. Use '@' for mention and '&' for emojis"
+                value={this.state.tagValue}
+                onChange={this.tagOnChange}
+                style={mentionsInputStyle}
+                a11ySuggestionsListLabel={"Suggested mentions"}
+              >
+                <Mention style={mentionStyle} data={this.state.users} />
+              </MentionsInput>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => {this.handleCancelAddComment()}}>Cancel</Button>
+              <Button onClick={(event) => this.handleSubmit(event)}>Add</Button>
+            </DialogActions>
+          </Dialog>
+        )} 
       </div>
     ):(
       <div></div>

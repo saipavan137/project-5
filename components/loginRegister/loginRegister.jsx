@@ -67,7 +67,6 @@ class LoginRegister extends React.Component {
           showLoginError: false,
           showRegistrationSuccess: false,
           showRegistrationError: false,
-          userLoggedOn : true,
         });
         this.props.changeUser(user);
       })
@@ -142,7 +141,7 @@ class LoginRegister extends React.Component {
     
   }
   render() {
-    return this.state.userLoggedOn !== true? (
+    return this.state.user ? (
       <div>
         <Box component="form" autoComplete="off">
           {this.state.showLoginError && <Alert severity="error">Login Failed</Alert>}

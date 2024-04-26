@@ -15,8 +15,7 @@ import UserDetail from './components/userDetail/userDetail';
 import UserList from './components/userList/userList';
 import UserPhotos from './components/userPhotos/userPhotos';
 import LoginRegister from './components/loginRegister/loginRegister';
-
-
+import FavoritePage from './components/favoritePage/favoritePage';
 
 class PhotoShare extends React.Component {
   constructor(props) {
@@ -56,7 +55,7 @@ class PhotoShare extends React.Component {
             (
               <Grid item sm={3}>
                 <Paper className="main-grid-item">
-                  <UserList/>
+                  <UserList activeUser={this.state.user}  />
                 </Paper>
               </Grid>
             )
@@ -68,19 +67,26 @@ class PhotoShare extends React.Component {
             <Switch>
               {
                 this.userIsLoggedIn() ?
-                    <Route path="/users/:userId" render={ props => <UserDetail {...props} changeMainContent={this.changeMainContent}/> }/>
+                    <Route path="/users/:userId" render={ props => <UserDetail activeUser={this.state.user} {...props} changeMainContent={this.changeMainContent}/> }/>
                     :
                     <Redirect path="/users/:userId" to="/login-register" />
               }
+
               {
                 this.userIsLoggedIn() ?
-                    <Route path="/photos/:userId" render ={ props => <UserPhotos {...props} changeMainContent={this.changeMainContent}/> }/>
+                    <Route path="/favorites" render={ props => <FavoritePage activeUser={this.state.user} {...props} /> }/>
+                    :
+                    <Redirect path="/favorites" to="/login-register" />
+              }
+              {
+                this.userIsLoggedIn() ?
+                    <Route path="/photos/:userId" render ={ props => <UserPhotos userList={this.state.userList} activeUser={this.state.user} {...props} changeMainContent={this.changeMainContent}/> }/>
                     :
                     <Redirect path="/photos/:userId" to="/login-register" />
               }
               {
                 this.userIsLoggedIn() ?
-                    <Route exact path="/" render={() => (<div/>)}/>
+                    <Route path="/" render={() => (<div/>)}/>
                     :
                     <Route path="/login-register" render ={ props => <LoginRegister {...props} changeUser={this.changeUser}/> } />
               }

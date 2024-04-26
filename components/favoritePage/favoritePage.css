@@ -1,0 +1,29 @@
+.parentFavoritePage {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;;
+  grid-template-rows: auto;
+  gap: 20px;
+}
+
+.favPicContainer {
+  position: relative;
+  height: 42vh;
+  width: 100%;
+}
+
+.crossIcon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 100%;
+  background-color: #ffffff92;
+}
+
+.favPicTag {
+  height: 100%;
+  width: 100%;
+}
+
+.parentFavoritePage {
+}

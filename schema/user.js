@@ -2,8 +2,13 @@
 
 const mongoose = require("mongoose");
 
+//Define the Mongoose Schema for a User Favorite.
+const favoriteSchema = new mongoose.Schema({
+  file_name: { type: String },
+});
+
 /**
- * Define the Mongoose Schema for a Comment.
+ * Define the Mongoose Schema for a user.
  */
 const userSchema = new mongoose.Schema({
   first_name: String,
@@ -12,7 +17,8 @@ const userSchema = new mongoose.Schema({
   description: String,
   occupation: String,
   login_name: String,
-  password: String
+  password: String,
+  favorites: [favoriteSchema],
 });
 
 /**

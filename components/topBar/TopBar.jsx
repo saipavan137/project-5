@@ -1,10 +1,12 @@
 import React from 'react';
+import { Link as RouterLink} from 'react-router-dom';
 import {
   AppBar, Toolbar, Typography, Button, Box, Modal, TextField
 } from '@mui/material';
 import './TopBar.css';
 import axios from 'axios';
 import fetchModel from '../../lib/fetchModelData';
+
 
 
 /**
@@ -93,30 +95,49 @@ class TopBar extends React.Component {
     return this.state.app_info ? (
       <AppBar className="topbar-appBar" position="absolute">
         <Toolbar>
-          <Typography variant="h5" component="div" sx={{ flexGrow: 0 }} color="inherit" align="left">Team: Symphony</Typography>      
+                
           {
             this.props.user ?
             (
-              <Typography variant="h5" component="div" color="inherit"  sx={{  display: 'flex', 
-                  width: 'fit-content', '& svg': {m: 1.5,}, '& hr': {mx: 0.5,},}} align="center">
-                <span>
-                  { "Hi " + this.props.user.first_name }
-                </span>
-                <Button variant="contained" onClick={this.handleLogout}>
-                  Logout
-                </Button>
-                <Button variant='contained' onClick={this.handleOpenForm}>
-                  Upload Photo
-                </Button>
-              </Typography>
+              <>
+                <Typography variant="h5" color="lemonchiffon">
+                    { "Hi " + this.props.user.first_name }
+                </Typography>
+                <br></br>
+                <Typography variant="h5" component="div"   sx={{  display: 'flex', 
+                    width: 'fit-content', '& svg': {m: 1.5,}, '& hr': {mx: 0.5,},}} align="center">                            
+                  <Button variant="contained" color="info" component={RouterLink} to={`/favorites`}>
+                    View Favorites
+                  </Button>
+                </Typography>
+                <br></br>
+                <Typography variant="h5" component="div"   sx={{  display: 'flex', 
+                    width: 'fit-content', '& svg': {m: 1.5,}, '& hr': {mx: 0.5,},}} align="center">                            
+                  <Button variant="contained" color="info" onClick={this.handleOpenForm}>
+                    Upload Photo
+                  </Button>
+                </Typography>
+               
+                
+              </>
             )
             :
             (
-              <Typography variant="h5" component="div" color="inherit" align="center"> Please login </Typography>
+              <Typography variant="h5" component="div" color="inherit" align="center"> Please login</Typography>
             )
           }          
           <Typography variant="h5" component="div" sx={{ flexGrow: 1 }} color="inherit" align="center">{this.props.main_content}</Typography> 
-          <Typography variant="h5" component="div" sx={{ flexGrow: 0 }} color="inherit" align="right"> Version: {this.state.app_info.__v}</Typography>
+          {
+            this.props.user ?
+            ( 
+              <Button variant="contained" color = "info" onClick={this.handleLogout} align="right">
+                Logout
+              </Button>
+            ):(<br></br>)
+          }
+          <Typography variant="h7" component="div" sx={{ flexGrow: 0 }} color="inherit" align="right">Team: Symphony</Typography>
+          <br></br>
+          <Typography variant="h7" component="div" sx={{ flexGrow: 0 }} color="inherit" align="right"> Version: {this.state.app_info.__v}</Typography>
         </Toolbar>
         <Modal open={this.state.isUploadFormOpen} onClose={this.handleCloseForm}>
           <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
