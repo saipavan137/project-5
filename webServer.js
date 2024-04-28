@@ -498,11 +498,12 @@ app.post('/favorite', async (request, response) => {
  
 });
 
+//endpoint to fetch the comments with mentions in them
 app.get('/comments/mentions/:mentionedUserId', async (req, res) => {
   const mentionedUserId = req.params.mentionedUserId;
   try {
     const allComments = await Photo.aggregate([
-      { $unwind: '$comments' }, // Unwind the comments array
+      { $unwind: '$comments' }, 
       { 
         $match: {
           'comments.comment': { $regex: `${mentionedUserId}`, $options: 'i' }
@@ -511,10 +512,10 @@ app.get('/comments/mentions/:mentionedUserId', async (req, res) => {
       {
         $project: {
           _id: 0, // Exclude the _id field from the output
-          commentId: '$comments._id', // Include the comment _id
-          commentText: '$comments.comment', // Include the comment text
-          commentDateTime: '$comments.date_time', // Include the comment date_time
-          userId: '$comments.user_id', // Include the user_id of the comment creator
+          commentId: '$comments._id', 
+          commentText: '$comments.comment', 
+          commentDateTime: '$comments.date_time', 
+          userId: '$comments.user_id', 
           photoFileName: '$file_name',
           photoUserId: '$user_id',
         },
