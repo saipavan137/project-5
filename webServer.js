@@ -460,22 +460,22 @@ app.get("/photosOfUser/:id", function (request, response) {
 });
 
 app.post('/favorite', async (request, response) => {
-  const { favorite, fileName, user_id } = request.body;
+  const { favorite, fileName, user_id, date_time } = request.body;
   try {
-    console.log(favorite, fileName, user_id);
+    console.log(favorite, fileName, user_id, date_time);
     const user = await User.findById(user_id);
     if(favorite ==='ALL' || fileName === undefined) {
       response.status(200).send(user.favorites);
       return;
     }
     else if(favorite) {
-      const file = {file_name: fileName, };
+      const file = {file_name: fileName, date_time: date_time };
       console.log('favorite');
-      user.favorites.push(file);  
+      user.favorites.push(file);
       user.save().then(res => {
         console.log(res);
-        response.status(200).send(user.favorites);  
-      }).catch((err) =>{console.log(err);});         
+        response.status(200).send(user.favorites);
+      }).catch((err) =>{console.log(err);});
     }
     else {
       const indexToRemove = user.favorites.findIndex(

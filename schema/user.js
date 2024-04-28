@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 //Define the Mongoose Schema for a User Favorite.
 const favoriteSchema = new mongoose.Schema({
   file_name: { type: String },
+  date_time: { type: Date, default: Date.now },
 });
 
 /**

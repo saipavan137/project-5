@@ -4,7 +4,6 @@ import {
 } from '@mui/material';
 import { Mention, MentionsInput } from 'react-mentions';
 import './userPhotos.css';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import fetchModel from '../../lib/fetchModelData';
 import Photo from './photo/photo';
@@ -224,7 +223,6 @@ class UserPhotos extends React.Component {
               </div>
             )}
         </ImageList>     
-                        
         {this.state.commenterId && (
           <Dialog open={this.state.add_comment}>
             <DialogTitle>Add Comment</DialogTitle>

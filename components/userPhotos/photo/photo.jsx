@@ -44,27 +44,30 @@ class Photo extends React.Component {
     });
   }
 
-
-
   handleFavorite = (item) => {
-    const { file_name } = item;
+    const { file_name, date_time } = item;
+    console.log('date_time: ', date_time);
     const { activeUser } = this.props;
     console.log(activeUser);
+
     if(this.state.favoriteState){
       console.log("Already favorite");
     }else{
       this.setState({ favoriteState: true });
+
       axios.post('/favorite', {
         fileName: file_name,
         favorite: true,
-        user_id: activeUser._id, 
+        user_id: activeUser._id,
+        date_time: date_time,
       }).then((res) => {
         console.log(res);
-        this.props.activeUser.favorites = res.favorites;
+        this.props.activeUser.favorites = res;
+        console.log(this.props.activeUser.favorites);
       }).catch(er => {
         console.log(er);
       });
-    }    
+    }
   };
 
   render() {

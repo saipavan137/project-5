@@ -23,7 +23,32 @@
 .favPicTag {
   height: 100%;
   width: 100%;
+  cursor: pointer;
 }
 
 .parentFavoritePage {
+}
+
+.modal-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-image {
+  max-width: 80vw;
+  max-height: 80vh;
+  object-fit: contain;
+  margin-bottom: 16px;
+}
+
+.modal-caption {
+  font-size: 30px;
 }
