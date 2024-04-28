@@ -459,6 +459,7 @@ app.get("/photosOfUser/:id", function (request, response) {
   });
 });
 
+//favorite endpoint
 app.post('/favorite', async (request, response) => {
   const { favorite, fileName, user_id, date_time } = request.body;
   try {
@@ -496,6 +497,39 @@ app.post('/favorite', async (request, response) => {
   }
  
 });
+
+app.get('/comments/mentions/:mentionedUserId', async (req, res) => {
+  const mentionedUserId = req.params.mentionedUserId;
+  try {
+    const allComments = await Photo.aggregate([
+      { $unwind: '$comments' }, // Unwind the comments array
+      { 
+        $match: {
+          'comments.comment': { $regex: `${mentionedUserId}`, $options: 'i' }
+        }
+      },
+      {
+        $project: {
+          _id: 0, // Exclude the _id field from the output
+          commentId: '$comments._id', // Include the comment _id
+          commentText: '$comments.comment', // Include the comment text
+          commentDateTime: '$comments.date_time', // Include the comment date_time
+          userId: '$comments.user_id', // Include the user_id of the comment creator
+          photoFileName: '$file_name',
+          photoUserId: '$user_id',
+        },
+      },
+    ]);
+    res.status(200).send(allComments);
+
+    return;
+  } catch (error) {
+    console.error('Error fetching all comments:', error);
+    throw error;
+  }
+});
+
+
 
 const server = app.listen(3000, function () {
   const port = server.address().port;
