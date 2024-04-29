@@ -23,7 +23,6 @@ class PhotoShare extends React.Component {
       main_content: undefined,
       user: undefined,
       userList:[],
-      userLoggedOn : false, 
     };
     this.changeMainContent = this.changeMainContent.bind(this);
     this.changeUser = this.changeUser.bind(this);
@@ -39,7 +38,6 @@ class PhotoShare extends React.Component {
 
   changeUser = (user) => {
     this.setState({user: user});
-    this.setState({userLoggedOn : true});
     if (user === undefined) this.changeMainContent(undefined);
   };
   
@@ -55,7 +53,7 @@ class PhotoShare extends React.Component {
         </Grid>
         <div className="main-topbar-buffer"/>
         {
-          this.state.userLoggedOn ?
+          this.userIsLoggedIn() ?
             (
               <Grid item sm={3}>
                 <Paper className="main-grid-item">
@@ -71,33 +69,33 @@ class PhotoShare extends React.Component {
             <Switch>
               {
                 
-                this.state.userLoggedOn ?
+                this.userIsLoggedIn() ?
                     <Route path="/users/:userId" render={ props => <UserDetail activeUser={this.state.user} {...props} changeMainContent={this.changeMainContent}/> }/>
                     :
                     <Redirect path="/users/:userId" to="/login-register" />
               }
 
               {
-                this.state.userLoggedOn ?
+                this.userIsLoggedIn() ?
                     <Route path="/favorites" render={ props => <FavoritePage activeUser={this.state.user} {...props} /> }/>
                     :
                     <Redirect path="/favorites" to="/login-register" />
               }
               {
-                this.state.userLoggedOn ?
+                this.userIsLoggedIn() ?
                     <Route path="/photos/:userId" render ={ props => <UserPhotos userList={this.state.userList} activeUser={this.state.user} {...props} changeMainContent={this.changeMainContent}/> }/>
                     :
                     <Redirect path="/photos/:userId" to="/login-register" />
               }
               {
-                this.state.userLoggedOn ?
+                this.userIsLoggedIn() ?
                     <Route path="/" render={() => (<div/>)}/>
                     :
                     <Route path="/login-register" render ={ props => <LoginRegister {...props} changeUser={this.changeUser}/> } />
               }
 
               {
-                this.state.userLoggedOn ?
+                this.userIsLoggedIn() ?
                     <Route path="/" render={() => (<div/>)}/>
                     :
                     <Redirect path="/" to="/login-register" />
