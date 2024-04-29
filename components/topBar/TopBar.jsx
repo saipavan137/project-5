@@ -68,7 +68,7 @@ class TopBar extends React.Component {
     const file = fileInput.files[0];
 
     if (!file) {
-      alert('Please select a file to upload.');
+      console.log('Please select a file to upload.');
       return;
     }
 
@@ -87,7 +87,6 @@ class TopBar extends React.Component {
     })
     .catch((error) => {
       console.error('Error uploading photo:', error);
-      alert('Error uploading photo. Please try again.');
     });
   };
 

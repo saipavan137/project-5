@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import React from 'react';
 import {
   Typography,ImageList,Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,Button

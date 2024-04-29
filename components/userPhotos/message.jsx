@@ -1,3 +1,5 @@
+/* eslint-disable react/no-danger */
+/* eslint-disable class-methods-use-this */
 import React, { Component } from "react";
 import "./style.css";
 
@@ -8,7 +10,7 @@ class MessageInput extends Component {
     this.replaceMentions = this.replaceMentions.bind(this);
   }
 
-  replaceMentions = (message, users) => {
+  replaceMentions =(message, users) =>{
     let mentions = users.map((obj) => {
       return "@[" + obj.display + "](" + obj.id + ")";
     });
@@ -25,7 +27,7 @@ class MessageInput extends Component {
         modifiedText = modifiedText.replace(mention, userLink);
       }
     });
-    return <div dangerouslySetInnerHTML={{ __html: modifiedText }} />;
+    return (<div dangerouslySetInnerHTML={{ __html: modifiedText }} />);
   };
 
   render() {

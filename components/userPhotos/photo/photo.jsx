@@ -81,8 +81,9 @@ class Photo extends React.Component {
             </div>
           </div>
           <div>
-            {item.comments ?
-              item.comments.map((comment) => (
+            <div>
+              {item.comments ?
+                item.comments.map((comment) => (
                 <div key={comment._id}>
                   <TextField label="Comment Date" variant="outlined" disabled fullWidth
                     margin="normal" value={comment.date_time} />
@@ -92,14 +93,13 @@ class Photo extends React.Component {
                   </TextField>
                   <MessageInput msg={comment.comment} users={this.state.users} />
                 </div>
-              ))
-              : 
+              )): 
               (
                 <div>
                   <Typography>No Comments</Typography>
                 </div>
-              )
-            }
+              )}
+            </div>
             <Button photo_id={item._id} variant="contained" onClick={(e) => this.props.handleShowAddComment(e)}>
               Add Comment
             </Button>

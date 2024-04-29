@@ -62,6 +62,7 @@ class LoginRegister extends React.Component {
       .then((response) => {
         const user = response.data;
         this.setState({
+          user:user,
           showLoginError: false,
           showRegistrationSuccess: false,
           showRegistrationError: false,
@@ -135,9 +136,7 @@ class LoginRegister extends React.Component {
     // eslint-disable-next-line no-return-assign
     this.setState((state) => state.user[event.target.id] = event.target.value);
   }
-  componentDidMount() {
-    
-  }
+  
   render() {
     return this.state.user ? (
       <div>
