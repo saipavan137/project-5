@@ -1,9 +1,9 @@
 # \<Project Name\> Scrum Team
 ## Product Owner
-\<Team Member Name\>
+Saikrishna Araja
 ## Scrum Master
-\<Team Member Name\>
+Sri Nikhitha challa
 ## Developers
-- \<Team Member Name\>
-- \<Team Member Name\>
-- \<Team Member Name\>
+- Lane Brentley
+- Hari priya chinnala
+- Venkata sai pavan Bommuluri
