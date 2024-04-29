@@ -2,37 +2,27 @@
 import React from 'react';
 import {
   Button, TextField,
-  ImageList, ImageListItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Link, Typography
+   ImageListItem, Typography
 } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import axios from 'axios';
 import './photo.css';
-import Message from '../Message';
+import MessageInput from '../message';
+
 
 
 class Photo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user_id: undefined,
-      photos: undefined,
-      new_comment: undefined,
-      add_comment: false,
-      current_photo_id: undefined,
+     
       favoriteState: props.favoriteFlag,
-      tagValue: "",
       users: [],
-      taggedIds: [],
       
     };
     
   }
   
-  handleNewCommentChange = (event) => {
-    this.setState({
-      new_comment: event.target.value
-    });
-  };
 
   componentDidMount() {
     axios.get("/user/list").then((response) => {
@@ -62,7 +52,7 @@ class Photo extends React.Component {
         date_time: date_time,
       }).then((res) => {
         console.log(res);
-        this.props.activeUser.favorites = res;
+        this.props.activeUser.favorites = res.data;
         console.log(this.props.activeUser.favorites);
       }).catch(er => {
         console.log(er);
@@ -100,10 +90,7 @@ class Photo extends React.Component {
                     margin="normal"
                     value={comment.user.first_name + " " + comment.user.last_name}>
                   </TextField>
-                  <Message
-                    msg={comment.comment}
-                    users={this.state.users}
-                  />
+                  <MessageInput msg={comment.comment} users={this.state.users} />
                 </div>
               ))
               : 

@@ -1,21 +1,21 @@
 import React, { Component } from "react";
 import "./style.css";
 
-class Message extends Component {
+class MessageInput extends Component {
   constructor(props) {
     super(props);
     this.state = {};
     this.replaceMentions = this.replaceMentions.bind(this);
   }
 
-  replaceMentions(message, users) {
+  replaceMentions = (message, users) => {
     let mentions = users.map((obj) => {
       return "@[" + obj.display + "](" + obj.id + ")";
     });
     console.log(mentions);
     let modifiedText = message;
     mentions.forEach((mention) => {
-      const [mentionText, userId] = mention.match(/\[([^\]]+)\]\(([^)]+)\)/);
+      const [userId] = mention.match(/\[([^\]]+)\]\(([^)]+)\)/);
       const user = mentions.find((u) => u.includes(userId));
 
       if (user) {
@@ -25,9 +25,8 @@ class Message extends Component {
         modifiedText = modifiedText.replace(mention, userLink);
       }
     });
-
     return <div dangerouslySetInnerHTML={{ __html: modifiedText }} />;
-  }
+  };
 
   render() {
     const { msg, users } = this.props;
@@ -37,4 +36,4 @@ class Message extends Component {
   }
 }
 
-export default Message;
+export default MessageInput;

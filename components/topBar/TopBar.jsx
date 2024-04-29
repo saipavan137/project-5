@@ -81,7 +81,7 @@ class TopBar extends React.Component {
       }
     })
     .then((response) => {
-      console.log('Photo uploaded successfully');
+      console.log('Photo uploaded successfully',response);
       // Close the upload form after successful upload
       this.handleCloseForm();
     })
@@ -104,15 +104,15 @@ class TopBar extends React.Component {
                     { "Hi " + this.props.user.first_name }
                 </Typography>
                 <br></br>
-                <Typography variant="h5" component="div"   sx={{  display: 'flex', 
-                    width: 'fit-content', '& svg': {m: 1.5,}, '& hr': {mx: 0.5,},}} align="center">                            
+                <Typography variant="h5" component="div" 
+                sx={{display: 'flex',width: 'fit-content', '& svg': {m: 1.5,}, '& hr': {mx: 0.5,},}} align="center">                            
                   <Button variant="contained" color="info" component={RouterLink} to={`/favorites`}>
                     View Favorites
                   </Button>
                 </Typography>
                 <br></br>
-                <Typography variant="h5" component="div"   sx={{  display: 'flex', 
-                    width: 'fit-content', '& svg': {m: 1.5,}, '& hr': {mx: 0.5,},}} align="center">                            
+                <Typography variant="h5" component="div" 
+                sx={{display: 'flex',width: 'fit-content', '& svg': {m: 1.5,}, '& hr': {mx: 0.5,},}} align="center">                            
                   <Button variant="contained" color="info" onClick={this.handleOpenForm}>
                     Upload Photo
                   </Button>

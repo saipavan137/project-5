@@ -9,7 +9,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Typography
 } from '@mui/material';
 import axios from 'axios';
 
@@ -32,7 +31,6 @@ class LoginRegister extends React.Component {
       showRegistrationSuccess: false,
       openRegistration: false,
       showRequiredFieldsWarning: false,
-      userLoggedOn:false,
     };
 
     this.handleLogin = this.handleLogin.bind(this);

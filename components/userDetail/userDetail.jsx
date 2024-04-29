@@ -48,7 +48,7 @@ class UserDetail extends Component {
         return response.json();
       })
       .then((data) => {
-        const userIds = data.map((comment) => comment.userId);
+        const userIds = data.map((comment) => comment.photoUserId);
 
         Promise.all(userIds.map((id) => fetchModel(`/user/${id}`)))
           .then((responses) => Promise.all(responses.map((res) => res.data)))
@@ -86,27 +86,36 @@ class UserDetail extends Component {
             <Grid item xs={12}>
               <RouterLink to={`/photos/${user._id}`}>View Photos</RouterLink>
             </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h6">Mentioned in Comments:</Typography>
-              {mentionComments.map((comment) => (
-                <div key={comment.commentId}>
-                  <Typography variant="body2">
-                    <RouterLink to={`/users/${commenterNames[comment.userId]._id}`}>
-                      {commenterNames[comment.userId].first_name} {commenterNames[comment.userId].last_name}
-                    </RouterLink>: {comment.commentText}
-                  </Typography>
-                  {comment.photoFileName && (
-                    <RouterLink to={`/photos/${comment.photoUserId}`}>
-                      <img
-                        src={`../../images/${comment.photoFileName}`}
-                        alt="Photo Thumbnail"
-                        style={{ maxWidth: '100px', cursor: 'pointer' }}
-                      />
-                    </RouterLink>
-                  )}
-                </div>
-              ))}
-            </Grid>
+            {mentionComments != null && mentionComments.length>0 ?
+              (
+                <Grid item xs={12}>                
+                  <Typography variant="h6">User is mentioned in  below users comments</Typography>
+                  {mentionComments.map((comment) => (
+                    <div key={comment.commentId}>
+                      <Typography variant="body2">
+                        <RouterLink to={`/users/${commenterNames[comment.photoUserId]._id}`}>
+                          {commenterNames[comment.photoUserId].first_name} {commenterNames[comment.photoUserId].last_name}
+                        </RouterLink> 
+                      </Typography>
+                      {comment.photoFileName && (
+                        <RouterLink to={`/photos/${comment.photoUserId}`}>
+                          <img
+                            src={`../../images/${comment.photoFileName}`}
+                            alt="Thumbnail"
+                            style={{ maxWidth: '100px', cursor: 'pointer' ,padding :'5px'}}
+                          />
+                        </RouterLink>
+                      )}
+                    </div>
+                    ))}
+                </Grid>
+              )
+              :
+              (
+                <Grid item xs={12}>
+                  <Typography variant="h6">User is not mentioned in any comments.</Typography>
+                </Grid>
+              )}  
           </Grid>
         </CardContent>
       </Card>

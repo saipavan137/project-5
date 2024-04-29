@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Paper, Modal, Backdrop, Fade, Typography } from '@mui/material';
+import React from 'react';
+import {  Modal, Backdrop, Fade, Typography } from '@mui/material';
 import axios from 'axios';
 import CloseIcon from '@mui/icons-material/Close';
 import './favoritePage.css';
@@ -36,22 +36,23 @@ class FavoritePage extends React.Component {
       });
   };
 
-  handleDeleteFavorite = (fileName, index) => {
+  handleDeleteFavorite = (fileName) => {
     const { activeUser } = this.props;
     axios.post('/favorite', {
       favorite: false,
       fileName,
       user_id: activeUser._id,
     })
-      .then((res) => {
-        const updatedPhotoArray = this.state.photoArray.filter((photo) => photo.file_name !== fileName);
-        this.setState({
-          photoArray: updatedPhotoArray,
-        });
-      })
-      .catch(er => {
-        console.log(er);
+    .then((res) => {
+      console.log(res);
+      const updatedPhotoArray = this.state.photoArray.filter((photo) => photo.file_name !== fileName);
+      this.setState({
+        photoArray: updatedPhotoArray,
       });
+    })
+    .catch(er => {
+      console.log(er);
+    });
   };
 
   handleOpenModal = (image, dateTime) => {
@@ -77,7 +78,7 @@ class FavoritePage extends React.Component {
               <CloseIcon
                 style={{ cursor: 'pointer' }}
                 className='crossIcon'
-                onClick={() => this.handleDeleteFavorite(photo.file_name, index)}
+                onClick={() => this.handleDeleteFavorite(photo.file_name)}
               />
               <img
                 className='favPicTag'

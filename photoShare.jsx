@@ -9,7 +9,6 @@ import {
 import './styles/main.css';
 import {Redirect} from "react-router";
 
-// import necessary components
 import TopBar from './components/topBar/TopBar';
 import UserDetail from './components/userDetail/userDetail';
 import UserList from './components/userList/userList';
@@ -22,7 +21,8 @@ class PhotoShare extends React.Component {
     super(props);
     this.state = {
       main_content: undefined,
-      user: undefined
+      user: undefined,
+      userList:[]
     };
     this.changeMainContent = this.changeMainContent.bind(this);
     this.changeUser = this.changeUser.bind(this);
@@ -40,6 +40,11 @@ class PhotoShare extends React.Component {
     this.setState({user: user});
     if (user === undefined) this.changeMainContent(undefined);
   };
+  
+  componentDidMount () {
+    
+  }
+
   
   render() {
     return (
@@ -90,6 +95,7 @@ class PhotoShare extends React.Component {
                     :
                     <Route path="/login-register" render ={ props => <LoginRegister {...props} changeUser={this.changeUser}/> } />
               }
+
               {
                 this.userIsLoggedIn() ?
                     <Route path="/" render={() => (<div/>)}/>

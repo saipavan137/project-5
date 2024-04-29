@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Typography,ImageList,Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,Button
 } from '@mui/material';
-import { Mention, MentionsInput } from 'react-mentions';
+import {Mention, MentionsInput } from 'react-mentions';
 import './userPhotos.css';
 import axios from 'axios';
 import fetchModel from '../../lib/fetchModelData';
@@ -27,8 +27,7 @@ class UserPhotos extends React.Component {
       users: [],
       taggedIds: [],
       tagValue: "",
-      add_comment:false,
-      new_comment:undefined,
+      add_comment:false
     };
     this.tagOnChange = this.tagOnChange.bind(this);
     this.handleCancelAddComment = this.handleCancelAddComment.bind(this);
@@ -74,12 +73,7 @@ class UserPhotos extends React.Component {
     });
   }
 
-  handleNewCommentChange = (event) => {
-    this.setState({
-      new_comment: event.target.value,
-    });
-  };
-
+  
 
   handleShowAddComment = (event) => {
     const photo_id = event.target.attributes.photo_id.value;
@@ -92,7 +86,6 @@ class UserPhotos extends React.Component {
   handleCancelAddComment = () => {
     this.setState({
       add_comment: false,
-      new_comment: undefined,
       current_photo_id: undefined
     });
   };
@@ -131,9 +124,7 @@ class UserPhotos extends React.Component {
     })
     .then(response => response.json())
     .then(data => {
-      console.log(
-        
-      );
+      console.log(data);
       this.setState({
         add_comment: false,
         current_photo_id: undefined,
@@ -150,7 +141,7 @@ class UserPhotos extends React.Component {
     });
   }
 
-  getSessionUserID() {
+  getSessionUserID(){
     return fetch('/getid', {
       method: 'GET'
     })
@@ -241,7 +232,7 @@ class UserPhotos extends React.Component {
               </MentionsInput>
             </DialogContent>
             <DialogActions>
-              <Button onClick={() => {this.handleCancelAddComment()}}>Cancel</Button>
+              <Button onClick={() => {this.handleCancelAddComment();}}>Cancel</Button>
               <Button onClick={(event) => this.handleSubmit(event)}>Add</Button>
             </DialogActions>
           </Dialog>
