@@ -26,4 +26,4 @@ Yes
 
 Any special instructions for grading (it should be easy for someone to run
 your app from a new machine):
-None
+If the user is not able to login for the very first time , please retry the login once again.
