@@ -49,6 +49,7 @@ class FavoritePage extends React.Component {
       this.setState({
         photoArray: updatedPhotoArray,
       });
+      this.props.activeUser.favorites = updatedPhotoArray;
     })
     .catch(er => {
       console.log(er);
