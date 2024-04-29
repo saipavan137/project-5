@@ -1,9 +1,10 @@
-# \<Project Name\> Scrum Team
+# \<Project Name\> Scrum Team 
+Team Name - Symphony
 ## Product Owner
 Saikrishna Araja
 ## Scrum Master
 Sri Nikhitha challa
 ## Developers
-- Lane Brentley
+- Lane Brantley
 - Hari priya chinnala
 - Venkata sai pavan Bommuluri
